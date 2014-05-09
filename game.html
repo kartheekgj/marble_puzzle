@@ -1,0 +1,54 @@
+<html>
+	<title>Snake Game Basic</title>
+	<head>
+		<style type="text/css">
+			table
+			{
+				width:auto;
+				border:1px solid  #666666;
+			}
+			tr,td
+			{
+			   border:1px solid  #666666;
+			   width:100px;
+			   text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<table id="main_body">
+			
+		</table>
+	</body>
+	<script type="text/javascript">
+		function fnCreateBoard(){
+			var table = "";
+			var maxRows = 7;
+			for(var i=0;i<maxRows;i++){
+				table += "<tr>"
+				for(var j=0;j<maxRows;j++){
+					if((i === 0) || (i === 1) || (i === (maxRows-1)) || (i === (maxRows-2))){
+						if((j === 0) || (j === 1) || (j === (maxRows-1)) || (j === (maxRows-2))){
+								table += "<td class='blank'>blank</td>";
+						}else{
+								table += "<td>"+ j +"</td>";
+						}
+					}else{
+							table += "<td>"+ j +"</td>";
+					}
+						
+				}	
+				table += "</tr>";	
+			}
+			
+			console.log(table);
+			document.getElementById("main_body").innerHTML = table;	
+		}
+		
+		
+		
+		fnCreateBoard();
+		
+	
+	</script>
+</html>
