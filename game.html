@@ -52,21 +52,21 @@
 						if((j === 0) || (j === 1) || (j === (maxRows-1)) || (j === (maxRows-2))){
 							//immovable blank
 							console.log(i)
-								table += "<td class='nonvol_blank'></td>";
+								table += "<td class='nonvol_blank' data='nonvol_blank'></td>";
 						}else{
 							//movable blank
 							if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
-								table += "<td class='vol_blank'></td>";	
+								table += "<td class='vol_blank' data='vol_blank'></td>";	
 							}else{
-								table += "<td id='vol_data"+ i +j +"'>"+ (j+1) +"</td>";	
+								table += "<td id='vol_data"+ i +j +"' onClick='swap(event)' data='"+ i+ j +"'>"+ (j+1) +"</td>";	
 							}
 						}
 					}else{
 						//movable blank
 						if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
-							table += "<td class='vol_blank'></td>";	
+							table += "<td class='vol_blank' data='vol_blank'></td>";	
 						}else{
-							table += "<td id='vol_data"+ i +j +"'>"+ (j+1) +"</td>";	
+							table += "<td id='vol_data"+ i +j +"' onClick='swap(event)' data='"+ i+ j +"'>"+ (j+1) +"</td>";	
 						}
 
 					}
@@ -76,6 +76,52 @@
 			}
 			document.getElementById("main_body").innerHTML = table;	
 		}
+		
+			
+		function getNeighbours(arrCnt, blnkIndex) {
+			neighbours = [];
+			var blankElement = document.getElementsByClassName("blank")[0];
+			var blankID = blankElement.id;
+			var previous = blankElement.previousSibling;
+
+			var left = previous ? previous.innerHTML : -1;
+			var next = blankElement.nextSibling;
+			var top = parseInt(blankID, 10) - level;
+			var bottom = (arrCnt > parseInt(blankID, 10) + level) ? parseInt(blankID, 10) + level : -1;
+
+			var right = next ? next.innerHTML : -1;
+			if (right !== -1) {
+				neighbours.push(right);
+			}
+
+			if (left !== -1) {
+				neighbours.push(left);
+			}
+			if (top > -1) {
+				neighbours.push(document.getElementById(top).innerHTML);
+			}
+			if (bottom > -1) {
+				neighbours.push(document.getElementById(bottom).innerHTML);
+			}
+
+
+		}
+		function swap(event) {
+			var target = event.target;
+			var id = target.id;
+			
+			//previous 
+			var nonvolblnk_left = document.getElementById(id).previousSibling;
+			if(nonvolblnk_left !== null && nonvolblnk_left.getAttribute("data").toLowerCase() === "nonvol_blank"){
+				console.log("No Left please try right");	
+			}
+			//next
+			var nonvolblnk_right = document.getElementById(id).nextSibling;
+			if(nonvolblnk_right !== null && nonvolblnk_right.getAttribute("data").toLowerCase() === "nonvol_blank"){
+				console.log("No right please try left");	
+			}
+		}
+		
 		
 		function fnFindNeighbours(){
 				
