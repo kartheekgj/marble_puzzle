@@ -1,23 +1,44 @@
 <html>
-	<title>Snake Game Basic</title>
+	<title>Marble Puzzle Game Basic</title>
 	<head>
 		<style type="text/css">
 			table
 			{
 				width:auto;
-				border:1px solid  #666666;
+				
 			}
 			tr,td
 			{
 			   border:1px solid  #666666;
-			   width:100px;
+			   width:60px;
+			   height:60px;
 			   text-align: center;
+			}
+			.nonvol_blank{
+				background : red;
+				border:0px solid  #666666;
+				
+			}
+			.vol_blank{
+				background : grey;
+				border:1px solid  #666666;
+			}
+			.label_header{
+				margin-left:37%;
+				margin-top:20px;
+				font-family: fantasy;
+				font-size: larger;
+				font-weight: bolder;	
+			}
+			#main_body{
+				margin-left:30%;
+				margin-top:2%;	
 			}
 		</style>
 	</head>
-	<body>
+	<body style="background-color: #F5DEB3;">
+		<label class="label_header">Marble Puzzle Game</label>
 		<table id="main_body">
-			
 		</table>
 	</body>
 	<script type="text/javascript">
@@ -29,26 +50,38 @@
 				for(var j=0;j<maxRows;j++){
 					if((i === 0) || (i === 1) || (i === (maxRows-1)) || (i === (maxRows-2))){
 						if((j === 0) || (j === 1) || (j === (maxRows-1)) || (j === (maxRows-2))){
-								table += "<td class='blank'>blank</td>";
+							//immovable blank
+							console.log(i)
+								table += "<td class='nonvol_blank'></td>";
 						}else{
-								table += "<td>"+ j +"</td>";
+							//movable blank
+							if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
+								table += "<td class='vol_blank'></td>";	
+							}else{
+								table += "<td id='vol_data"+ i +j +"'>"+ (j+1) +"</td>";	
+							}
 						}
 					}else{
-							table += "<td>"+ j +"</td>";
+						//movable blank
+						if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
+							table += "<td class='vol_blank'></td>";	
+						}else{
+							table += "<td id='vol_data"+ i +j +"'>"+ (j+1) +"</td>";	
+						}
+
 					}
 						
 				}	
 				table += "</tr>";	
 			}
-			
-			console.log(table);
 			document.getElementById("main_body").innerHTML = table;	
 		}
 		
-		
+		function fnFindNeighbours(){
+				
+			
+		}
 		
 		fnCreateBoard();
-		
-	
 	</script>
 </html>
