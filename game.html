@@ -11,7 +11,7 @@
 			{
 			   border:1px solid  #666666;
 			   width:60px;
-			   height:60px;
+			   height:75px;
 			   text-align: center;
 			}
 			.nonvol_blank{
@@ -34,6 +34,23 @@
 				margin-left:30%;
 				margin-top:2%;	
 			}
+			.vol_data{
+				 width:1%;
+                padding:10px 11px;
+                margin:0 auto;
+                border:2px solid #a1a1a1;
+                border-radius:25px;
+                background-color:#008000;
+			}
+			.remoData{
+				background-color: #FFFFFF;
+				width:1%;
+                padding:10px 11px;
+                margin:0 auto;
+                border:2px solid #a1a1a1;
+                border-radius:25px;
+				
+			}
 		</style>
 	</head>
 	<body style="background-color: #F5DEB3;">
@@ -45,10 +62,11 @@
 		var maxRows = 7,
 			availData = [],
 			curr_id = '',prev_id = '';	
+			clickData = [];
 		function fnCreateBoard(){
 			var table = "";
 			for(var i=0;i<maxRows;i++){
-				table += "<tr>"
+				table += "<tr>";
 					for(var j=0;j<maxRows;j++){
 						if((i === 0) || (i === 1) || (i === (maxRows-1)) || (i === (maxRows-2))){
 							if((j === 0) || (j === 1) || (j === (maxRows-1)) || (j === (maxRows-2))){
@@ -59,7 +77,7 @@
 								if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
 									table += "<td id='"+ i +"_vol.data_"+j +"' class='vol_blank' data='vol_blank'></td>";	
 								}else{
-									table += "<td id='"+ i +"_vol.data_"+j +"' onClick='swap(event)' data='"+ i+ j +"'>"+ (j+1) +"</td>";	
+									table += "<td id='"+ i +"_vol.data_"+j +"' onClick='swap(event)' data='"+ i+ j +"'><span class='vol_data'>"+ (j+1) +"</span></td>";	
 									availData.push(i +"_vol.data_"+j); 
 								}
 							}
@@ -68,7 +86,7 @@
 							if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
 								table += "<td id='"+ i +"_vol.data_"+j +"' class='vol_blank' data='vol_blank'></td>";	
 							}else{
-								table += "<td id='"+ i +"_vol.data_"+j +"' onClick='swap(event)' data='"+ i+ j +"'>"+ (j+1) +"</td>";	
+								table += "<td id='"+ i +"_vol.data_"+j +"' onClick='swap(event)' data='"+ i+ j +"'><span class='vol_data'>"+ (j+1) +"</span></td>";	
 								availData.push(i +"_vol.data_"+j); 
 							}
 						}
@@ -81,31 +99,52 @@
 		function swap(event) {
 			var target = event.target,
 				id = target.id;
+				i =0;
 				prev_id = '';
-				document.getElementById(id).style.border = "1px solid  #FF0000";
+				for(i= 0; i< clickData.length;i++){
+					document.getElementById(clickData[i]).style.border = "1px solid #666666";
+				}
+				document.getElementById(id).style.border = "1px solid #FF0000";
 				if(curr_id !== ''){
 					prev_id = curr_id;
 					curr_id = id;
-				
+					clickData.push(prev_id);
 					//if no productive action done
 					if(curr_id === prev_id){
-						document.getElementById(curr_id).style.border = "1px solid  #666666";
+						for(i= 0; i< clickData.length;i++){
+							document.getElementById(clickData[i]).style.border = "1px solid #666666";
+						}
 						curr_id = '',prev_id = '';	
+						clickData = [];
 					}else{
-						document.getElementById(prev_id).style.border = "1px solid  #FF0000";
-						fnValidate(curr_id,prev_id);
+						if(prev_id !== ''){
+							document.getElementById(prev_id).style.border = "1px solid #FF0000";
+							fnValidate(curr_id,prev_id);
+						}
 					}
 				}else{
+					clickData = [];
 					curr_id = '';
 					curr_id = id;
+					clickData.push(curr_id);
 				}
-				
-			
 		}
 		// function to validate the data based on click
 		function fnValidate(curr_id,prev_id){
+			var swap = false;
 			if(availData.indexOf(curr_id) !== -1 && availData.indexOf(prev_id) !== -1){
 				//conditions for swaping
+				
+				//swapping done
+				if(swap){
+					document.getElementById(curr_id).innerHTML = document.getElementById(prev_id).innerHTML;
+					document.getElementById(prev_id).innerHTML = "<td id='"+ prev_id +"'><span class='remoData'></span></td>";
+					for(var i= 0; i< clickData.length;i++){
+						document.getElementById(clickData[i]).style.border = "1px solid #666666";
+					}
+					curr_id = '',prev_id = '';	
+					clickData = [];
+				}
 			}
 		}
 		
