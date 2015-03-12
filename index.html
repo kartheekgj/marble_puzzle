@@ -183,7 +183,7 @@
 				curr_id = self.id;
 				
 		
-			if(clickedBlank.length === availData.length){
+			if((clickedBlank.length-1) === availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
 				return false;
@@ -259,6 +259,12 @@
 			document.getElementById(prev_id).innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
 			toBeBlankDiv.innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
 			moves++;
+						
+			if((clickedBlank.length-1) === availData.length){
+				alert('You have completed the game');
+				fnCreateBoard();
+				return false;
+			}
 			return true;
 		}
 
