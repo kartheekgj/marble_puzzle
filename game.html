@@ -2,152 +2,297 @@
 	<title>Marble Puzzle Game Basic</title>
 	<head>
 		<style type="text/css">
-			table
-			{
+			table {
 				width:auto;
 				
 			}
-			tr,td
-			{
+			tr,td {
 			   border:1px solid  #666666;
 			   width:60px;
 			   height:75px;
 			   text-align: center;
 			}
-			.nonvol_blank{
+			.nonvol_blank {
 				background : red;
 				border:0px solid  #666666;
 				
 			}
-			.vol_blank{
+			.vol_blank {
 				background : grey;
 				border:1px solid  #666666;
 			}
-			.label_header{
+			.label_header { 
 				margin-left:37%;
 				margin-top:20px;
 				font-family: fantasy;
 				font-size: larger;
 				font-weight: bolder;	
 			}
-			#main_body{
-				margin-left:30%;
+			#main_body {
+				
 				margin-top:2%;	
 			}
-			.vol_data{
-				 width:1%;
-                padding:10px 11px;
-                margin:0 auto;
-                border:2px solid #a1a1a1;
-                border-radius:25px;
-                background-color:#008000;
+			.vol_data {
+			    border-radius: 50%;
+			    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+			    padding: 10% 20%;
+			    background-color:#008000;
+			    border: 2px solid #666;
+			    color: #fff;
+			    text-align: center;
+			    font: 32px Arial, sans-serif;
+
 			}
-			.remoData{
+			.remoData {
+				border-radius: 50%;
+			    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+			    padding: 10% 30%;
+			    background-color: #FFFFFF;
+			    border: 2px solid #666;
+			    color: #fff;
+			    text-align: center;
+			    font: 32px Arial, sans-serif;
+			}
+			h1 {
+			  text-shadow: 0 1px 0 #ccc,
+			               0 2px 0 #c9c9c9,
+			               0 3px 0 #bbb,
+			               0 4px 0 #b9b9b9,
+			               0 5px 0 #aaa,
+			               0 6px 1px rgba(0,0,0,.1),
+			               0 0 5px rgba(0,0,0,.1),
+			               0 1px 3px rgba(0,0,0,.3),
+			               0 3px 5px rgba(0,0,0,.2),
+			               0 5px 10px rgba(0,0,0,.25),
+			               0 10px 10px rgba(0,0,0,.2),
+			               0 20px 20px rgba(0,0,0,.15);
+			}
+			.infoRules{
+				z-index: 100;
+				top: 15%;
+				left: 15%;
+				font: 20px Arial, sans-serif;
+				border: 2px solid #666;
 				background-color: #FFFFFF;
-				width:1%;
-                padding:10px 11px;
-                margin:0 auto;
-                border:2px solid #a1a1a1;
-                border-radius:25px;
-				
+				position: absolute;
+				margin-left: auto;
+				margin-right: auto;
+				width: 70%;
+			    display: none;
 			}
-		</style>
+			a.boxclose{
+			    float: right;
+				margin-top: -1%;
+				margin-right: -1%;
+				cursor: pointer;
+				color: #fff;
+				border: 1px solid #AEAEAE;
+				border-radius: 60%;
+				background: #605F61;
+				font-size: 31px;
+				font-weight: bold;
+				display: inline-block;
+				line-height: 0px;
+				padding: 2% 1%;       
+			}
+
+			.boxclose:before {
+			    content: "x";
+			}
+	</style>
 	</head>
 	<body style="background-color: #F5DEB3;">
-		<label class="label_header">Marble Puzzle Game</label>
-		<table id="main_body">
-		</table>
+		<center>
+			<h1>Marble Puzzle Game</h1>
+			<a href="javascript:;" id="infoRules">Rules</a>
+
+			<table id="main_body">
+			</table>
+		</center>
+		
+		<div class="infoRules" id="infoRulesData">
+			<div><a class="boxclose" id="boxclose"></a></div>
+			<ol style="margin-left: 3%;">
+				<h4><strong>How to Play</strong></h4>	
+				<li>
+					You need to move the marble to the blank.
+				</li>
+				<li>
+					You can only move the marble which is in the alternative box from the blank div
+				</li>
+				<li>
+					Once you move the marble to blank the box which is in between your selected and blank will become blank
+				</li>
+				<li>
+					The process repeats and you need to make the boxes blank.
+				</li>
+				<li>
+					If you remain with only one marble in the table you reached the goal "YOU WIN"
+				</li>
+			</ol>
+		</div>
 	</body>
 	<script type="text/javascript">
+		document.getElementById("infoRules").addEventListener('click',function(){
+			document.getElementById("infoRulesData").style.display = "block";
+		})
+		document.getElementById("boxclose").addEventListener('click',function(){
+			document.getElementById("infoRulesData").style.display = "none";
+		})
 		var maxRows = 7,
 			availData = [],
-			curr_id = '',prev_id = '';	
-			clickData = [];
+			prev_id = '';	
+			clickedBlank = [], moves = 0;
 		function fnCreateBoard(){
-			var table = "";
+			var table = [];
 			for(var i=0;i<maxRows;i++){
-				table += "<tr>";
+				table.push("<tr>");
 					for(var j=0;j<maxRows;j++){
 						if((i === 0) || (i === 1) || (i === (maxRows-1)) || (i === (maxRows-2))){
 							if((j === 0) || (j === 1) || (j === (maxRows-1)) || (j === (maxRows-2))){
 								//immovable blank
-									table += "<td id='"+ i +"_vol.data_"+j +"' class='nonvol_blank' data='nonvol_blank'></td>";
+									table.push("<td id='"+ i +"_vol.data_"+ j +"' class='nonvol_blank' data='nonvol_blank'></td>");
 							}else{
 								//movable blank
-								if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
-									table += "<td id='"+ i +"_vol.data_"+j +"' class='vol_blank' data='vol_blank'></td>";	
+								if((i + 1) === parseInt(Math.ceil(maxRows/2),10) && (j + 1)=== parseInt(Math.ceil(maxRows/2),10)){
+									table.push("<td id='"+ i +"_vol.data_"+ j +"' onClick='swap(this)' data='"+ i + j +"'><span class='remoData'><"+ (j + 1) +"</span></td>");	
+									clickedBlank.push(i +"_vol.data_"+ j); 
 								}else{
-									table += "<td id='"+ i +"_vol.data_"+j +"' onClick='swap(event)' data='"+ i+ j +"'><span class='vol_data'>"+ (j+1) +"</span></td>";	
-									availData.push(i +"_vol.data_"+j); 
+									table.push("<td id='"+ i +"_vol.data_"+ j +"' onClick='swap(this)' data='"+ i + j +"'><span class='vol_data'>"+ (j + 1) +"</span></td>");	
+									availData.push(i +"_vol.data_"+ j); 
 								}
 							}
 						}else{
 							//movable blank
-							if((i+1) === parseInt(Math.ceil(maxRows/2),10) && (j+1)=== parseInt(Math.ceil(maxRows/2),10)){
-								table += "<td id='"+ i +"_vol.data_"+j +"' class='vol_blank' data='vol_blank'></td>";	
+							if((i + 1) === parseInt(Math.ceil(maxRows/2),10) && (j + 1)=== parseInt(Math.ceil(maxRows/2),10)){
+								table.push("<td id='"+ i +"_vol.data_"+ j +"' onClick='swap(this)' data='"+ i + j +"'><span class='remoData'>"+ (j + 1) +"</span></td>");	
+								clickedBlank.push(i +"_vol.data_"+ j); 
 							}else{
-								table += "<td id='"+ i +"_vol.data_"+j +"' onClick='swap(event)' data='"+ i+ j +"'><span class='vol_data'>"+ (j+1) +"</span></td>";	
-								availData.push(i +"_vol.data_"+j); 
+								table.push("<td id='"+ i +"_vol.data_"+ j +"' onClick='swap(this)' data='"+ i + j +"'><span class='vol_data'>"+ (j + 1) +"</span></td>");	
+								availData.push(i +"_vol.data_"+ j); 
 							}
 						}
 					}	
-				table += "</tr>";	
+				table.push("</tr>");	
 			}
-			document.getElementById("main_body").innerHTML = table;	
+			document.getElementById("main_body").innerHTML = table.join("");	
 		}
 		//making a onclick even - getting current and previous click to swap
-		function swap(event) {
-			var target = event.target,
-				id = target.id;
-				i =0;
-				prev_id = '';
-				for(i= 0; i< clickData.length;i++){
-					document.getElementById(clickData[i]).style.border = "1px solid #666666";
-				}
-				document.getElementById(id).style.border = "1px solid #FF0000";
-				if(curr_id !== ''){
-					prev_id = curr_id;
-					curr_id = id;
-					clickData.push(prev_id);
-					//if no productive action done
-					if(curr_id === prev_id){
-						for(i= 0; i< clickData.length;i++){
-							document.getElementById(clickData[i]).style.border = "1px solid #666666";
-						}
-						curr_id = '',prev_id = '';	
-						clickData = [];
-					}else{
-						if(prev_id !== ''){
-							document.getElementById(prev_id).style.border = "1px solid #FF0000";
-							fnValidate(curr_id,prev_id);
-						}
-					}
-				}else{
-					clickData = [];
-					curr_id = '';
-					curr_id = id;
-					clickData.push(curr_id);
-				}
-		}
-		// function to validate the data based on click
-		function fnValidate(curr_id,prev_id){
-			var swap = false;
-			if(availData.indexOf(curr_id) !== -1 && availData.indexOf(prev_id) !== -1){
-				//conditions for swaping
+		function swap(self) {
+			var neighbours = [],
+				curr_id = self.id;
 				
-				//swapping done
-				if(swap){
-					document.getElementById(curr_id).innerHTML = document.getElementById(prev_id).innerHTML;
-					document.getElementById(prev_id).innerHTML = "<td id='"+ prev_id +"'><span class='remoData'></span></td>";
-					for(var i= 0; i< clickData.length;i++){
-						document.getElementById(clickData[i]).style.border = "1px solid #666666";
-					}
-					curr_id = '',prev_id = '';	
-					clickData = [];
+		
+			if(clickedBlank.length === availData.length){
+				alert('You have completed the game');
+				fnCreateBoard();
+				return false;
+			}
+			neighbours = fnClickableNeighbours();
+
+			if(neighbours.length !== 0 && (neighbours.indexOf(curr_id) !== -1 || clickedBlank.indexOf(curr_id) !== -1)){
+				document.getElementById(curr_id).style.border = "1px solid #FF0000";
+				if(prev_id === curr_id){
+					console.log("same click");
+					document.getElementById(curr_id).style.border = "1px solid #666666";
+					curr_id = '', prev_id = '';
+					return false;
 				}
+				if(prev_id === ''){
+					prev_id = curr_id;	
+				}else {
+					document.getElementById(prev_id).style.border = "1px solid #666666";
+					document.getElementById(curr_id).style.border = "1px solid #666666";
+					console.log(clickedBlank);
+					fnSwap(curr_id, prev_id);	
+					prev_id = ''; //since after swap no history remains
+				}
+			}else{
+
+				console.log('fuckoff outsider');
 			}
 		}
-		
+		// function to validate the data based on click
+		function fnSwap(curr_id,prev_id){
+			var arrSplitCurrId = curr_id.split("_"),
+				arrSplitPrevId = prev_id.split("_"), toBeBlankDiv = '', pushData = '';
+				
+				clickedBlank.splice(clickedBlank.indexOf(curr_id),1);//removing previous value
+
+			if(arrSplitPrevId[2] < arrSplitCurrId[2]){
+				
+				toBeBlankDiv = document.getElementById(prev_id).nextElementSibling;
+				pushData = document.getElementById(prev_id).nextElementSibling.id;
+
+			}else if(arrSplitPrevId[2] > arrSplitCurrId[2]){
+				
+				toBeBlankDiv = document.getElementById(prev_id).previousElementSibling;
+				pushData = document.getElementById(prev_id).previousElementSibling.id;
+
+			}else if(arrSplitPrevId[0] < arrSplitCurrId[0]){
+				
+				topBottom = (parseInt(arrSplitCurrId[0])-1) +"_"+ arrSplitCurrId [1] +"_"+ arrSplitCurrId[2];
+				toBeBlankDiv = document.getElementById(topBottom);
+				pushData = topBottom;
+
+			}else if(arrSplitPrevId[0] > arrSplitCurrId[0]){
+				
+				topBottom = (parseInt(arrSplitCurrId[0])+1) +"_"+ arrSplitCurrId [1] +"_"+ arrSplitCurrId[2];
+				toBeBlankDiv = document.getElementById(topBottom);
+				pushData = topBottom;
+
+			}else{
+				console.log("fucked up");
+			}
+
+			if(clickedBlank.indexOf(pushData) === -1){
+				console.log("pushedData:" + pushData);
+				clickedBlank.push(pushData);
+			}
+			if(clickedBlank.indexOf(prev_id) === -1){
+				console.log("pushed:" + prev_id);
+				clickedBlank.push(prev_id);//since both will be blank previous and previous neighbour
+			}
+
+
+			document.getElementById(curr_id).innerHTML = document.getElementById(prev_id).innerHTML;
+			document.getElementById(prev_id).innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
+			toBeBlankDiv.innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
+			moves++;
+			return true;
+		}
+
+		function fnClickableNeighbours(){
+			var clickableNeighbours = [], temp = [];
+			i = 0;
+			while(i < clickedBlank.length){
+				temp = fnGetNeighbours(clickedBlank[i]);
+				j = 0;
+				while(j < temp.length){
+					if(temp[j] !== -1 && clickableNeighbours.indexOf(temp[j]) === -1){
+						clickableNeighbours.push(temp[j]);
+					}
+					j++;
+				}
+				i++;
+			}
+			return clickableNeighbours;
+		}
+
+
+		function fnGetNeighbours(curr_id){
+			var left = (document.getElementById(curr_id).previousElementSibling !== null && 
+						document.getElementById(curr_id).previousElementSibling.previousElementSibling !== null) ? 
+						document.getElementById(curr_id).previousElementSibling.previousElementSibling.getAttribute("id") : -1,
+				right = (document.getElementById(curr_id).nextElementSibling !== null && 
+						document.getElementById(curr_id).nextElementSibling.nextElementSibling !== null) ? 
+						document.getElementById(curr_id).nextElementSibling.nextElementSibling.getAttribute("id") : -1,
+				arrSplitCurrId = curr_id.split("_"),
+				top = ((parseInt(arrSplitCurrId[0])-2) < 0) ? -1 : (parseInt(arrSplitCurrId[0])-2) +"_"+ arrSplitCurrId [1] +"_"+ arrSplitCurrId[2],
+				bottom = ((parseInt(arrSplitCurrId[0])+2) >= maxRows) ? -1 : (parseInt(arrSplitCurrId[0])+2) +"_"+ arrSplitCurrId [1] +"_"+ arrSplitCurrId[2];
+			
+			return [left, right, top, bottom] || [];
+		}	
 		fnCreateBoard();
 	</script>
 </html>
