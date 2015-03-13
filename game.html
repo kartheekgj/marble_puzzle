@@ -183,7 +183,7 @@
 				curr_id = self.id;
 				
 		
-			if((clickedBlank.length-1) === availData.length){
+			if((clickedBlank.length-1) >= availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
 				return false;
@@ -203,8 +203,11 @@
 				}else {
 					document.getElementById(prev_id).style.border = "1px solid #666666";
 					document.getElementById(curr_id).style.border = "1px solid #666666";
-					console.log(clickedBlank);
-					fnSwap(curr_id, prev_id);	
+					if(clickedBlank.indexOf(curr_id) !== -1 || clickedBlank.indexOf(prev_id) !== -1){
+						fnSwap(curr_id, prev_id);		
+					}else{
+						console.log('other divs');
+					}
 					prev_id = ''; //since after swap no history remains
 				}
 			}else{
@@ -217,7 +220,7 @@
 			var arrSplitCurrId = curr_id.split("_"),
 				arrSplitPrevId = prev_id.split("_"), toBeBlankDiv = '', pushData = '';
 				
-				clickedBlank.splice(clickedBlank.indexOf(curr_id),1);//removing previous value
+				
 
 			if(arrSplitPrevId[2] < arrSplitCurrId[2]){
 				
@@ -245,27 +248,35 @@
 				console.log("fucked up");
 			}
 
-			if(clickedBlank.indexOf(pushData) === -1){
-				console.log("pushedData:" + pushData);
-				clickedBlank.push(pushData);
-			}
-			if(clickedBlank.indexOf(prev_id) === -1){
-				console.log("pushed:" + prev_id);
-				clickedBlank.push(prev_id);//since both will be blank previous and previous neighbour
+			console.log('to be blank div' + toBeBlankDiv.id);
+
+			if(clickedBlank.indexOf(toBeBlankDiv.id) !== -1){
+				console.log('my neighbour hole');
+				return false;
+			}else{
+				if(clickedBlank.indexOf(pushData) === -1){
+					clickedBlank.push(pushData);
+				}
+				if(clickedBlank.indexOf(prev_id) === -1){
+					clickedBlank.push(prev_id);//since both will be blank previous and previous neighbour
+				}
+			
+				clickedBlank.splice(clickedBlank.indexOf(curr_id),1);//removing previous value	
+				document.getElementById(curr_id).innerHTML = document.getElementById(prev_id).innerHTML;
+				document.getElementById(prev_id).innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
+				toBeBlankDiv.innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
+				moves++;
 			}
 
 
-			document.getElementById(curr_id).innerHTML = document.getElementById(prev_id).innerHTML;
-			document.getElementById(prev_id).innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
-			toBeBlankDiv.innerHTML = "<td id='"+ prev_id +"' data='"+ prev_id +"'><span class='remoData'></span></td>";
-			moves++;
+			
 						
-			if((clickedBlank.length-1) === availData.length){
+			if((clickedBlank.length-1) >= availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		function fnClickableNeighbours(){
