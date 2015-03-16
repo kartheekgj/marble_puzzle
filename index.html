@@ -144,7 +144,10 @@
 			prev_id = '';	
 			clickedBlank = [], moves = 0;
 		function fnCreateBoard(){
-			var table = [];
+			var table = [],maxRows = 7,
+			availData = [],
+			prev_id = '';	
+			clickedBlank = [], moves = 0;
 			for(var i=0;i<maxRows;i++){
 				table.push("<tr>");
 					for(var j=0;j<maxRows;j++){
@@ -183,7 +186,7 @@
 				curr_id = self.id;
 				
 		
-			if((clickedBlank.length-1) >= availData.length){
+			if((clickedBlank.length-1) <= availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
 				return false;
@@ -271,7 +274,7 @@
 
 			
 						
-			if((clickedBlank.length-1) >= availData.length){
+			if((clickedBlank.length-1) <= availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
 				return true;
