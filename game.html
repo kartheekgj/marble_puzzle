@@ -186,11 +186,11 @@
 				curr_id = self.id;
 				
 		
-			if((clickedBlank.length-1) == availData.length){
+			/*if((clickedBlank.length-1) == availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
 				return false;
-			}
+			}*/
 			neighbours = fnClickableNeighbours();
 
 			if(neighbours.length !== 0 && (neighbours.indexOf(curr_id) !== -1 || clickedBlank.indexOf(curr_id) !== -1)){
@@ -274,11 +274,11 @@
 
 			
 						
-			if((clickedBlank.length-1) == availData.length){
+			/*if((clickedBlank.length-1) == availData.length){
 				alert('You have completed the game');
 				fnCreateBoard();
-				return true;
-			}
+				return false;
+			}*/
 			return false;
 		}
 
